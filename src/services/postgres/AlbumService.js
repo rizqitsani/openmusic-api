@@ -5,9 +5,12 @@ const InvariantError = require('../../exceptions/InvariantError');
 const NotFoundError = require('../../exceptions/NotFoundError');
 const { mapAlbumDBToModel } = require('../../utils');
 
+const SongService = require('./SongService');
+
 class AlbumService {
   constructor() {
     this._pool = new Pool();
+    this._songService = new SongService();
   }
 
   async addAlbum({ name, year }) {
@@ -46,7 +49,11 @@ class AlbumService {
       throw new NotFoundError('Album tidak ditemukan');
     }
 
-    return result.rows.map(mapAlbumDBToModel)[0];
+    const songs = await this._songService.getSongByAlbumId(id);
+
+    const mappedResult = result.rows.map(mapAlbumDBToModel)[0];
+
+    return { ...mappedResult, songs };
   }
 
   async editAlbumById(id, { name, year }) {
