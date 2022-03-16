@@ -4,6 +4,7 @@ const Hapi = require('@hapi/hapi');
 
 const album = require('./api/album');
 const song = require('./api/song');
+const ClientError = require('./exceptions/ClientError');
 const AlbumService = require('./services/postgres/AlbumService');
 const SongService = require('./services/postgres/SongService');
 const AlbumValidator = require('./validator/album');
@@ -21,6 +22,21 @@ const init = async () => {
         origin: ['*'],
       },
     },
+  });
+
+  server.ext('onPreResponse', (request, h) => {
+    const { response } = request;
+
+    if (response instanceof ClientError) {
+      const newResponse = h.response({
+        status: 'fail',
+        message: response.message,
+      });
+      newResponse.code(response.statusCode);
+      return newResponse;
+    }
+
+    return response.continue || response;
   });
 
   await server.register({
