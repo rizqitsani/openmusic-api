@@ -7,8 +7,9 @@ const NotFoundError = require('../../exceptions/NotFoundError');
 const { mapPlaylistDBToModel, mapNestedSongs } = require('../../utils');
 
 class PlaylistService {
-  constructor() {
+  constructor(collaborationService) {
     this._pool = new Pool();
+    this._collaborationService = collaborationService;
   }
 
   async addPlaylist({ name, owner }) {
@@ -31,7 +32,8 @@ class PlaylistService {
     const query = {
       text: `SELECT playlists.*, users.username FROM playlists
       LEFT JOIN users ON users.id = playlists.owner
-      WHERE playlists.owner = $1`,
+      LEFT JOIN collaborations ON collaborations.playlist_id = playlists.id
+      WHERE playlists.owner = $1 OR collaborations.user_id = $1`,
       // text: `SELECT * FROM playlists WHERE owner = $1`,
       values: [owner],
     };
@@ -138,7 +140,18 @@ class PlaylistService {
   }
 
   async verifyPlaylistAccess(playlistId, userId) {
-    await this.verifyPlaylistOwner(playlistId, userId);
+    try {
+      await this.verifyPlaylistOwner(playlistId, userId);
+    } catch (error) {
+      if (error instanceof NotFoundError) {
+        throw error;
+      }
+      try {
+        await this._collaborationService.verifyCollaborator(playlistId, userId);
+      } catch {
+        throw error;
+      }
+    }
   }
 }
 
