@@ -3,7 +3,7 @@ const { Pool } = require('pg');
 
 const InvariantError = require('../../exceptions/InvariantError');
 const NotFoundError = require('../../exceptions/NotFoundError');
-const { mapAlbumDBToModel } = require('../../utils');
+const { mapAlbumDBToModel, mapNestedSongs } = require('../../utils');
 
 const SongService = require('./SongService');
 
@@ -39,7 +39,9 @@ class AlbumService {
 
   async getAlbumById(id) {
     const query = {
-      text: 'SELECT * FROM albums WHERE id = $1',
+      text: `SELECT albums.*, songs.id as song_id, songs.year as song_year, songs.performer FROM albums
+      LEFT JOIN songs ON songs.album_id = albums.id
+      WHERE albums.id = $1`,
       values: [id],
     };
 
@@ -49,7 +51,7 @@ class AlbumService {
       throw new NotFoundError('Album tidak ditemukan');
     }
 
-    const songs = await this._songService.getSongByAlbumId(id);
+    const songs = result.rows.map(mapNestedSongs);
 
     const mappedResult = result.rows.map(mapAlbumDBToModel)[0];
 
