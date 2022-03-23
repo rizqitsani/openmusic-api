@@ -13,6 +13,12 @@ const mapNestedSongs = ({ song_id, song_title, performer }) => ({
   performer,
 });
 
+const mapPlaylistDBToModel = ({ id, name, username }) => ({
+  id,
+  name,
+  username,
+});
+
 const mapSongDBToModel = ({
   id,
   title,
@@ -35,4 +41,9 @@ const mapSongDBToModel = ({
   updatedAt: updated_at,
 });
 
-module.exports = { mapAlbumDBToModel, mapNestedSongs, mapSongDBToModel };
+module.exports = {
+  mapAlbumDBToModel,
+  mapNestedSongs,
+  mapPlaylistDBToModel,
+  mapSongDBToModel,
+};

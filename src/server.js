@@ -5,22 +5,26 @@ const Jwt = require('@hapi/jwt');
 
 const album = require('./api/album');
 const authentication = require('./api/authentication');
+const playlist = require('./api/playlist');
 const song = require('./api/song');
 const user = require('./api/user');
 const ClientError = require('./exceptions/ClientError');
 const AlbumService = require('./services/postgres/AlbumService');
 const AuthenticationService = require('./services/postgres/AuthenticationService');
+const PlaylistService = require('./services/postgres/PlaylistService');
 const SongService = require('./services/postgres/SongService');
 const UserService = require('./services/postgres/UserService');
 const TokenManager = require('./tokenize/TokenManager');
 const AlbumValidator = require('./validator/album');
 const AuthenticationValidator = require('./validator/authentication');
+const PlaylistValidator = require('./validator/playlist');
 const SongValidator = require('./validator/song');
 const UserValidator = require('./validator/user');
 
 const init = async () => {
   const albumService = new AlbumService();
   const authenticationService = new AuthenticationService();
+  const playlistService = new PlaylistService();
   const songService = new SongService();
   const userService = new UserService();
 
@@ -100,6 +104,14 @@ const init = async () => {
         userService,
         tokenManager: TokenManager,
         validator: AuthenticationValidator,
+      },
+    },
+    {
+      plugin: playlist,
+      options: {
+        playlistService,
+        songService,
+        validator: PlaylistValidator,
       },
     },
   ]);
