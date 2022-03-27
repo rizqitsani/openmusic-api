@@ -26,16 +26,15 @@ class PlaylistHandler {
       owner: credentialId,
     });
 
-    const response = h.response({
-      status: 'success',
-      message: 'Lagu berhasil ditambahkan',
-      data: {
-        playlistId,
-      },
-    });
-    response.code(201);
-
-    return response;
+    return h
+      .response({
+        status: 'success',
+        message: 'Lagu berhasil ditambahkan',
+        data: {
+          playlistId,
+        },
+      })
+      .code(201);
   }
 
   async getPlaylistsHandler(request) {
@@ -94,13 +93,12 @@ class PlaylistHandler {
       'add',
     );
 
-    const response = h.response({
-      status: 'success',
-      message: 'Lagu berhasil ditambahkan ke playlist',
-    });
-    response.code(201);
-
-    return response;
+    return h
+      .response({
+        status: 'success',
+        message: 'Lagu berhasil ditambahkan ke playlist',
+      })
+      .code(201);
   }
 
   async getPlaylistSongsHandler(request) {

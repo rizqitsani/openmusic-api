@@ -15,16 +15,15 @@ class SongHandler {
 
     const songId = await this._service.addSong(request.payload);
 
-    const response = h.response({
-      status: 'success',
-      message: 'Lagu berhasil ditambahkan',
-      data: {
-        songId,
-      },
-    });
-    response.code(201);
-
-    return response;
+    return h
+      .response({
+        status: 'success',
+        message: 'Lagu berhasil ditambahkan',
+        data: {
+          songId,
+        },
+      })
+      .code(201);
   }
 
   async getSongsHandler(request) {

@@ -22,15 +22,15 @@ class CollaborationHandler {
       userId,
     );
 
-    const response = h.response({
-      status: 'success',
-      message: 'Kolaborasi berhasil ditambahkan',
-      data: {
-        collaborationId,
-      },
-    });
-    response.code(201);
-    return response;
+    return h
+      .response({
+        status: 'success',
+        message: 'Kolaborasi berhasil ditambahkan',
+        data: {
+          collaborationId,
+        },
+      })
+      .code(201);
   }
 
   async deleteCollaborationHandler(request) {

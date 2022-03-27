@@ -35,8 +35,7 @@ class SongService {
     };
 
     const result = await this._pool.query(query);
-
-    return result.rows.map(mapSongDBToModel);
+    return result.rows;
   }
 
   async getSongById(id) {
@@ -52,17 +51,6 @@ class SongService {
     }
 
     return result.rows.map(mapSongDBToModel)[0];
-  }
-
-  async getSongByAlbumId(albumId) {
-    const query = {
-      text: 'SELECT * FROM songs WHERE album_id = $1',
-      values: [albumId],
-    };
-
-    const result = await this._pool.query(query);
-
-    return result.rows.map(mapSongDBToModel);
   }
 
   async editSongById(id, { title, year, genre, performer, duration, albumId }) {
