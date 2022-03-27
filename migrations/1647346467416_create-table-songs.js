@@ -9,7 +9,7 @@ exports.up = (pgm) => {
       notNull: true,
     },
     year: {
-      type: 'INTEGER',
+      type: 'SMALLINT',
       notNull: true,
     },
     performer: {
