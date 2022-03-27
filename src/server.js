@@ -6,6 +6,8 @@ const Jwt = require('@hapi/jwt');
 const album = require('./api/album');
 const authentication = require('./api/authentication');
 const collaboration = require('./api/collaboration');
+// eslint-disable-next-line no-underscore-dangle
+const _exports = require('./api/export');
 const playlist = require('./api/playlist');
 const song = require('./api/song');
 const user = require('./api/user');
@@ -16,10 +18,12 @@ const CollaborationService = require('./services/postgres/CollaborationService')
 const PlaylistService = require('./services/postgres/PlaylistService');
 const SongService = require('./services/postgres/SongService');
 const UserService = require('./services/postgres/UserService');
+const ProducerService = require('./services/rabbitmq/ProducerService');
 const TokenManager = require('./tokenize/TokenManager');
 const AlbumValidator = require('./validator/album');
 const AuthenticationValidator = require('./validator/authentication');
 const CollaborationValidator = require('./validator/collaboration');
+const ExportValidator = require('./validator/export');
 const PlaylistValidator = require('./validator/playlist');
 const SongValidator = require('./validator/song');
 const UserValidator = require('./validator/user');
@@ -125,6 +129,14 @@ const init = async () => {
         playlistService,
         userService,
         validator: CollaborationValidator,
+      },
+    },
+    {
+      plugin: _exports,
+      options: {
+        producerService: ProducerService,
+        playlistService,
+        validator: ExportValidator,
       },
     },
   ]);
