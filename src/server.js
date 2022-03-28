@@ -37,7 +37,10 @@ const init = async () => {
   const albumService = new AlbumService(cacheService);
   const authenticationService = new AuthenticationService();
   const collaborationService = new CollaborationService();
-  const playlistService = new PlaylistService(collaborationService);
+  const playlistService = new PlaylistService(
+    collaborationService,
+    cacheService,
+  );
   const songService = new SongService();
   const userService = new UserService();
 
