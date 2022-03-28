@@ -20,6 +20,7 @@ const PlaylistService = require('./services/postgres/PlaylistService');
 const SongService = require('./services/postgres/SongService');
 const UserService = require('./services/postgres/UserService');
 const ProducerService = require('./services/rabbitmq/ProducerService');
+const StorageService = require('./services/s3/StorageService');
 const TokenManager = require('./tokenize/TokenManager');
 const AlbumValidator = require('./validator/album');
 const AuthenticationValidator = require('./validator/authentication');
@@ -30,6 +31,7 @@ const SongValidator = require('./validator/song');
 const UserValidator = require('./validator/user');
 
 const init = async () => {
+  const storageService = new StorageService();
   const albumService = new AlbumService();
   const authenticationService = new AuthenticationService();
   const collaborationService = new CollaborationService();
@@ -91,7 +93,8 @@ const init = async () => {
     {
       plugin: album,
       options: {
-        service: albumService,
+        albumService,
+        storageService,
         validator: AlbumValidator,
       },
     },
